@@ -29,8 +29,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [TaskController::class, 'dashboard'])->name('dashboard');
 
     // TASK
-    Route::get('/board', Board::class)->name('board');
+    // Route::get('/board', Board::class)->name('board');
     Route::get('/task/mytask', [TaskController::class, 'mytask'])->name('task.mytask');
+    Route::post('/store-board', [TaskController::class, 'store_board']);
 });
 
 Route::middleware('auth')->group(function () {

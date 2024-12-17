@@ -64,6 +64,9 @@
 
     <link rel="stylesheet" href="{{ asset('assets/css/pages/app-logistics-dashboard.css') }}" />
 
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+
     <!-- Helpers -->
     <script src="{{ asset('assets/vendor/js/helpers.js') }}"></script>
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
@@ -170,8 +173,9 @@
 
 
     <div class="buy-now">
-        <a href="#" class="btn btn-primary btn-add-now"><i class='bx bxs-file-plus me-1'></i>
-            Add New Task</a>
+        {{-- <a href="#" class="btn btn-primary btn-add-now"><i class='bx bxs-file-plus me-1'></i>
+            Add New Task</a> --}}
+        <a href="#" class="btn btn-primary btn-add-now"><i class='bx bx-task'></i></a>
     </div>
 
 
@@ -211,6 +215,21 @@
 
     <!-- Page JS -->
     <script src="{{ asset('assets/js/app-logistics-dashboard.js') }}"></script>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+    <script src="{{ asset('assets/js/ui-toasts.js') }}"></script>
+    <script>
+        toastr.options = {
+            "closeButton": false,
+            "progressBar": false,
+            "positionClass": "toast-top-right",
+            // "positionClass": "toast-bottom-right",
+            "timeOut": "5000",
+        };
+    </script>
+
     @stack('script')
     @livewireScripts
 </body>

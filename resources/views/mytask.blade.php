@@ -30,8 +30,8 @@
             <div class="kanban-wrapper ps fnz-kanban-wrapper">
                 <div class="kanban-container fnz-kanban-container" id="kanban-container" style="width: 822px;">
 
-                    @foreach ($boards as $b)
-                        <div data-id="board-in-progress" data-order="{{ $b->position }}" class="kanban-board"
+                    @foreach ($boards->sortBy('position') as $b)
+                        <div data-slug="{{ $b->slug }}" data-order="{{ $b->position }}" class="kanban-board"
                             style="width: 250px; margin-left: 12px; margin-right: 12px;">
                             <header class="kanban-board-header">
                                 <div class="kanban-title-board">{{ $b->title }}</div>
@@ -112,15 +112,15 @@
                         </div>
                     @endforeach
 
-                    <form class="kanban-add-new-board">
+                    <form class="kanban-add-new-board" id="add-new-board" autocomplete="off">
                         <label class="kanban-add-board-btn" for="kanban-add-board-input">
                             <i class="bx bx-plus"></i>
                             <span class="align-middle">Add new</span>
                         </label>
                         <input type="text" class="form-control w-px-250 kanban-add-board-input mb-4 d-none"
-                            placeholder="Add Board Title" id="kanban-add-board-input" required="">
+                            placeholder="Add Board Title" id="kanban-add-board-input">
                         <div class="mb-4 kanban-add-board-input d-none">
-                            <button class="btn btn-primary btn-sm me-3">Add</button>
+                            <button type="submit" class="btn btn-primary btn-sm me-3">Add</button>
                             <button type="button"
                                 class="btn btn-label-secondary btn-sm kanban-add-board-cancel-btn">Cancel</button>
                         </div>
@@ -408,6 +408,73 @@
                     $(".kanban-add-board-input").addClass("d-none");
                 });
 
+                $('#add-new-board').on('submit', function(e) {
+                    e.preventDefault();
+
+                    var boardTitle = $('#kanban-add-board-input').val().trim();
+                    if (boardTitle) {
+                        $.ajax({
+                            url: '/store-board', // Endpoint untuk menambah board
+                            method: 'POST',
+                            data: {
+                                title: boardTitle,
+                                _token: '{{ csrf_token() }}' // CSRF token untuk keamanan
+                            },
+                            success: function(response) {
+                                if (response.status === 'success') {
+
+                                    // Menambahkan board baru secara langsung ke halaman
+                                    var newBoard = `
+                            <div data-slug="board-${response.board.slug}" data-order="${response.board.position}" class="kanban-board" style="width: 250px; margin-left: 12px; margin-right: 12px;">
+                                <header class="kanban-board-header">
+                                    <div class="kanban-title-board">${response.board.title}</div>
+                                    <div class="dropdown">
+                                        <i class="dropdown-toggle bx bx-dots-vertical-rounded cursor-pointer"
+                                            id="board-dropdown" data-bs-toggle="dropdown" aria-haspopup="true"
+                                            aria-expanded="false"></i>
+                                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="board-dropdown">
+                                            <a class="dropdown-item delete-board" href="javascript:void(0)"> <i
+                                                class="bx bx-trash bx-xs" me-1=""></i> <span class="align-middle">Delete</span></a>
+                                            <a class="dropdown-item" href="javascript:void(0)"><i class="bx bx-rename bx-xs" me-1=""></i>
+                                                <span class="align-middle">Rename</span></a>
+                                            <a class="dropdown-item" href="javascript:void(0)"><i class="bx bx-archive bx-xs" me-1=""></i>
+                                                <span class="align-middle">Archive</span></a>
+                                        </div>
+                                    </div>
+                                    <button class="kanban-title-button btn btn-default">+ Add New Item</button>
+                                </header>
+                                <main class="kanban-drag"></main>
+                                <footer></footer>
+                            </div>`;
+
+                                    // $('#kanban-container').append(newBoard);
+                                    // $('#kanban-container').prepend(newBoard);
+                                    $('#kanban-container').find('.kanban-add-new-board').before(
+                                        newBoard);
+
+                                    // Sembunyikan input dan reset nilai input
+                                    $('#kanban-add-board-input').addClass('d-none');
+                                    $('#kanban-add-board-input').val('');
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.error(error);
+                                toastr.error("Server Error");
+                            }
+                        });
+
+                    } else {
+                        toastr.warning("Title tidak boleh kosong!");
+                    }
+                });
+
+                $(document).on('click', '.delete-board', function() {
+                    alert('delete')
+                });
+
+                @if (session('success'))
+                    toastr.success("{{ session('success') }}");
+                @endif
 
 
                 var kanbanWrapper = $(".fnz-kanban-wrapper");

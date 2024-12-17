@@ -36,12 +36,12 @@
         <li class="menu-header small text-uppercase"><span class="menu-header-text" data-i18n="My Task">My Task</span>
         </li>
 
-        <li class="menu-item {{ request()->is('board*') ? 'active' : '' }}">
+        {{-- <li class="menu-item {{ request()->is('board*') ? 'active' : '' }}">
             <a href="{{ route('board') }}" class="menu-link">
                 <i class='menu-icon tf-icons bx bx-chalkboard'></i>
                 <div class="text-truncate" data-i18n="Board">Board</div>
             </a>
-        </li>
+        </li> --}}
 
         <li class="menu-item {{ request()->is('task*') ? 'active' : '' }}">
             <a href="{{ route('task.mytask') }}" class="menu-link">
